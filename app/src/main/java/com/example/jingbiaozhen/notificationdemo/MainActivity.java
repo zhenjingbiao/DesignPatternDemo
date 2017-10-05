@@ -11,6 +11,9 @@ import FactoryTest.Factory;
 import FactoryTest.ProduceA;
 import FactoryTest.ProduceB;
 import FactoryTest.ProduceC;
+import ObserverTest.OneWeatherObserver;
+import ObserverTest.TwoWeatherObserver;
+import ObserverTest.Weather;
 import StrategyTest.BusCalculateStrategy;
 import StrategyTest.TrafficSrategy;
 
@@ -45,6 +48,14 @@ public class MainActivity extends AppCompatActivity
         //策略模式
         TrafficSrategy srategy=new TrafficSrategy();
         srategy.setCalculateStrategy(new BusCalculateStrategy());
+        //监听者模式
+        Weather weather=new Weather();
+        weather.addObserver(new OneWeatherObserver());
+        weather.addObserver(new TwoWeatherObserver());
+        weather.timePass();
+        weather.timePass();
+        weather.timePass();
+        weather.timePass();
         computerTv.setText(srategy.calculatePrice());
 
     }
