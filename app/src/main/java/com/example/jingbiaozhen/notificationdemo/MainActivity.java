@@ -4,6 +4,9 @@ import java.lang.reflect.Proxy;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import AdapterTest.Captain;
@@ -20,6 +23,8 @@ import MVCTest.Health;
 import MVCTest.PersonController;
 import MVCTest.PersonModel;
 import MVCTest.PersonView;
+import MVPTest.LoginPresenterImpl;
+import MVPTest.LoginView;
 import ObserverTest.OneWeatherObserver;
 import ObserverTest.TwoWeatherObserver;
 import ObserverTest.Weather;
@@ -30,54 +35,76 @@ import ProxyTest.StaticProxy.Xiaoming;
 import StrategyTest.BusCalculateStrategy;
 import StrategyTest.TrafficSrategy;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements LoginView, View.OnClickListener
 {
 
     private TextView computerTv;
+
+    private ProgressBar progressBar;
+
+    private EditText username;
+
+    private EditText password;
+
+    private LoginPresenterImpl presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        computerTv = (TextView) findViewById(R.id.tv_computer);
+        initUI();
         init();
 
     }
 
+    private void initUI()
+    {
+        computerTv = (TextView) findViewById(R.id.tv_computer);
+        progressBar = (ProgressBar) findViewById(R.id.progress);
+        username = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
+        findViewById(R.id.button).setOnClickListener(this);
+
+        presenter = new LoginPresenterImpl(this);
+    }
+
     private void init()
     {
-       // performBuilder();// 建造者模式
-       // performFactory();// 工厂模式
-       // performStrategy();// 策略模式
-       // performObserver();// 观察者模式
-       // performAdapter();// 适配器模式
-       // performStaticProxy();//静态代理
-       // performDynamicProxy();//动态代理
-        performMVC();//MVC 模式
+        // performBuilder();// 建造者模式
+        // performFactory();// 工厂模式
+        // performStrategy();// 策略模式
+        // performObserver();// 观察者模式
+        // performAdapter();// 适配器模式
+        // performStaticProxy();//静态代理
+        // performDynamicProxy();//动态代理
+        performMVC();// MVC 模式
 
     }
 
-    private void performMVC() {
+    private void performMVC()
+    {
 
-        PersonModel personModel=new PersonModel(Health.HEALTH,Fatigue.SLEEP);
-        PersonView personview=new PersonView();
-        PersonController control=new PersonController(personModel,personview);
+        PersonModel personModel = new PersonModel(Health.HEALTH, Fatigue.SLEEP);
+        PersonView personview = new PersonView();
+        PersonController control = new PersonController(personModel, personview);
         computerTv.setText(control.updateView());
     }
 
-    private void performDynamicProxy() {
-        ILawsuit xiaoming =new Xiaoming();
-        DynamicProxy proxy=new DynamicProxy(xiaoming);
-        ClassLoader loader=xiaoming.getClass().getClassLoader();
-        ILawsuit lawyer= (ILawsuit) Proxy.newProxyInstance(loader,new Class[]{ILawsuit.class},proxy);
-        computerTv.setText(lawyer.burden()+lawyer.defend()+lawyer.finish());
+    private void performDynamicProxy()
+    {
+        ILawsuit xiaoming = new Xiaoming();
+        DynamicProxy proxy = new DynamicProxy(xiaoming);
+        ClassLoader loader = xiaoming.getClass().getClassLoader();
+        ILawsuit lawyer = (ILawsuit) Proxy.newProxyInstance(loader, new Class[] {ILawsuit.class}, proxy);
+        computerTv.setText(lawyer.burden() + lawyer.defend() + lawyer.finish());
     }
 
-    private void performStaticProxy() {
-        ILawsuit xiaoming=new Xiaoming();
-        Lawyer lawyer=new Lawyer(xiaoming);
-        computerTv.setText(lawyer.burden()+lawyer.defend()+lawyer.finish());
+    private void performStaticProxy()
+    {
+        ILawsuit xiaoming = new Xiaoming();
+        Lawyer lawyer = new Lawyer(xiaoming);
+        computerTv.setText(lawyer.burden() + lawyer.defend() + lawyer.finish());
     }
 
     private void performAdapter()
@@ -128,4 +155,51 @@ public class MainActivity extends AppCompatActivity
         computerTv.setText(person.toString());
     }
 
+    @Override
+    public void showProgress()
+    {
+        progressBar.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideProgress()
+    {
+        progressBar.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void setUsernameError()
+    {
+
+        username.setError(getString(R.string.username_error));
+    }
+
+    @Override
+    public void setPasswordError()
+    {
+        username.setError(getString(R.string.password_error));
+
+    }
+
+    @Override
+    public void navigateToHome()
+    {
+
+
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        presenter.destory();
+        super.onDestroy();
+    }
 }
